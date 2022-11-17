@@ -4,6 +4,7 @@ import axios from 'axios';
 import { NavigationContainer } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {ROOT_FOLDER} from "@env";
 import {
   SafeAreaView,
   ScrollView,
@@ -61,7 +62,7 @@ const BottomTabNavigatorScreen = () => {
           />
         ),
       }} />
-      <Tab.Screen name="File" component={FileScreen} initialParams={{ path: '/PrasannaDrop' }}
+      <Tab.Screen name="File" component={FileScreen} initialParams={{ path:  `${ROOT_FOLDER}` }}
 
         options={{
 
