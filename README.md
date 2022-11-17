@@ -14,8 +14,10 @@ Installation:
 1) Clone this repo: gh repo clone prasan2421/Project-Dropbox
 2) Setup the development environment: https://reactnative.dev/docs/environment-setup
 3) cd DropboxProject
-4) Connect you device or emulator
-5) Run npm install and npx react-native run-android 
+4) Create you Dropbox app through this link: https://www.dropbox.com/developers/apps
+5) Change your api_token and root_folder in .env file.
+6) Connect you device or emulator
+7) Run npm install and npx react-native run-android 
 
 
 
