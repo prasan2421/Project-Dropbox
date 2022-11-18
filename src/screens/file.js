@@ -6,6 +6,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import styled from 'styled-components/native';
+import {uiShowModal} from '../store/actions/ui';
+import { useSelector, useDispatch } from 'react-redux';
 import { API_TOKEN } from "@env";
 import {
   SafeAreaView,
@@ -22,13 +24,10 @@ import {
 
 import {
   Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
+
 } from 'react-native/Libraries/NewAppScreen';
 
-
+import {uiHideModal} from '../store/actions/ui';
 
 const StyledText = styled.Text`
   font-size: 14;
@@ -46,7 +45,10 @@ const File = ({ route, navigation }) => {
   const [data, setData] = useState();
   const { path } = route.params;
 
-
+  const { modalVisibleAlert,modalMessage } = useSelector(
+    state => state.ui,
+  );
+  const dispatch = useDispatch();
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -82,9 +84,9 @@ const File = ({ route, navigation }) => {
 
   // Get data from dropbox API
 
-  const getData = () => {
-
-    axios.post('https://api.dropboxapi.com/2/files/list_folder', {
+  const getData = async() => {
+    try{
+    const response = await axios.post('https://api.dropboxapi.com/2/files/list_folder', {
       "path": path
     },
       {
@@ -109,15 +111,56 @@ const File = ({ route, navigation }) => {
         });
 
         let data = [{ title: 'Folders', data: folders }, { title: 'Files', data: files }]
-
-        // alert(JSON.stringify(data))
-        console.log(data);
+        // console.log(data);
         setData(data)
       })
-      .catch(function (error) {
+    }
+      catch (error) {
         Alert('Something went wrong')
         console.log('Error is :' + error);
-      });
+      };
+
+
+  }
+
+  const deleteData = async() => {
+    try{
+    const response = await axios.post('https://api.dropboxapi.com/2/files/delete_v2', {
+      "path": modalData.path_display
+    },
+      {
+        headers: {
+
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${API_TOKEN}`
+        },
+
+
+      }
+    )
+      .then(function (response) {
+
+        // alert(JSON.stringify(response.data))
+
+        // const files = response.data.entries.filter(obj => {
+        //   return obj[".tag"] === 'file';
+        // });
+        // const folders = response.data.entries.filter(obj => {
+        //   return obj[".tag"] === 'folder';
+        // });
+
+        // let data = [{ title: 'Folders', data: folders }, { title: 'Files', data: files }]
+        dispatch(uiShowModal('File/Folder deleted successfully!'))
+        console.log(data);
+        getData();
+
+        // setData(data)
+      })
+    }
+      catch (error) {
+        Alert('Something went wrong')
+        console.log('Error is :' + error);
+      };
 
 
   }
@@ -129,12 +172,35 @@ const File = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={{backgroundColor: isDarkMode ? Colors.black : Colors.white, flex:1}}>
+       <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisibleAlert}
+         
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+
+              <Text style={{color:'black'}}>{modalMessage}</Text>
+              
+              <Pressable
+                style={[styles.button, styles.buttonClose]}
+                onPress={() => 
+                  //  alert(modalVisibleAlert);
+                   dispatch(uiHideModal(false))   
+                }
+              >
+                <Text style={styles.textStyle}>Close</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
       <Modal
         animationType="slide"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
+          
           setModalVisible(!modalVisible);
         }}
       >
@@ -143,8 +209,19 @@ const File = ({ route, navigation }) => {
 
             {modelDataDisplay()}
             <Pressable
+              style={[styles.button, styles.buttonRemove]}
+              onPress={() => {
+                deleteData()
+                setModalData('')
+                setModalVisible(!modalVisible)
+              }}
+            >
+              <Text style={styles.textStyle}>Remove</Text>
+            </Pressable>
+            <Pressable
               style={[styles.button, styles.buttonClose]}
               onPress={() => {
+             
                 setModalData('')
                 setModalVisible(!modalVisible)
               }}
@@ -263,6 +340,10 @@ const styles = StyleSheet.create({
   },
   buttonClose: {
     backgroundColor: "#2196F3",
+    marginTop: 20
+  },
+  buttonRemove: {
+    backgroundColor: "red",
     marginTop: 20
   },
   textStyle: {

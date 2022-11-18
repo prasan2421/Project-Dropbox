@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import {ROOT_FOLDER} from "@env";
+import {uiShowModal} from '../store/actions/ui';
 import {
   SafeAreaView,
   ScrollView,
@@ -17,18 +18,10 @@ import {
   Button, TouchableOpacity
 } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions
-} from 'react-native/Libraries/NewAppScreen';
-
-
+import {useSelector, useDispatch} from 'react-redux';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeScreen from '../screens/home.js'
-import FileScreen from '../screens/file.js'
+import HomeScreen from '../screens/Home.js'
+import FileScreen from '../screens/File.js'
 
 
 /* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
@@ -43,6 +36,11 @@ const Tab = createBottomTabNavigator();
 const BottomTabNavigatorScreen = () => {
   const isDarkMode = useColorScheme() === 'dark';
 
+
+  const {modalVisible} = useSelector(
+    state => state.ui,
+);
+const dispatch = useDispatch();
 
 
   return (
@@ -79,7 +77,7 @@ const BottomTabNavigatorScreen = () => {
           headerRight: () => (
             <View style={{ flexDirection: 'row' }}>
               <TouchableOpacity activeOpacity={0.5}
-                onPress={() => alert('Search feature coming soon!')}
+                onPress={() => dispatch(uiShowModal('Search feature coming soon!'))}
               >
                 <MaterialCommunityIcons
                   name="card-search-outline"
@@ -89,7 +87,7 @@ const BottomTabNavigatorScreen = () => {
 
               </TouchableOpacity>
               <TouchableOpacity activeOpacity={0.5}
-                onPress={() => alert('More feature coming soon!')}
+                onPress={() => dispatch(uiShowModal('More feature coming soon!'))}
               >
                 <MaterialCommunityIcons
                   name="dots-horizontal"
