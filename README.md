@@ -5,7 +5,8 @@ React Native application of a basic file explorer to display files and folders f
 1) Extracted my Dropbox app data (files and folders) from dropbox rest api.
 2) Displayed Files and folders separately using sectionlist component.
 3) UI using Styled components library and StyleSheet.create (react native default).
-4) Navigation using react navigation library ( Stack navigator and Bottom tab navigato.
+4) Navigation using react navigation library ( Stack navigator and Bottom tab navigator ).
+5) Parameters are passed through stacks to provide data to the dropbox rest api.
 5) Material Community Icons
 6) Redux state handling for alerts.
 
@@ -24,6 +25,7 @@ React Native application of a basic file explorer to display files and folders f
 ## Use
 
 1) Display dropbox files and folders
+2) Bottom tabs and stack nagigators for navigation.
 2) View files and folders details
 3) Delete files and folders
 
